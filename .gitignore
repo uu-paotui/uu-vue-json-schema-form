@@ -1,0 +1,26 @@
+.DS_Store
+node_modules
+stats.html
+
+packages/lib/vue2-form-element/stats.html
+/packages/docs/docs/.vuepress/dist/
+/packages/demo/demo-v2/dist
+/packages/demo/demo-v3/dist
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
