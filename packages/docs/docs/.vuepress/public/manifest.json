@@ -1,0 +1,16 @@
+{
+    "name": "Vjsf",
+    "short_name": "Vue JSON Schema form",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "description": "Vue JSON Schema form",
+    "theme_color": "blue",
+    "icons": [
+      {
+        "src": "/logo.png",
+        "sizes": "144x144",
+        "type": "image/png"
+      }
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "name": "docs",
+    "version": "1.10.0",
+    "private": true,
+    "license": "Apache-2.0",
+    "scripts": {
+        "dev": "vuepress dev docs",
+        "dev:debug": "vuepress dev docs --no-cache --debug",
+        "build": "vuepress build docs"
+    },
+    "dependencies": {
+        "@lljj/vue-json-schema-form": "1.10.0",
+        "element-ui": "^2.13.2",
+        "v-distpicker": "^1.2.7"
+    },
+    "devDependencies": {
+        "@vuepress/plugin-medium-zoom": "^1.5.2",
+        "@vuepress/plugin-pwa": "^1.5.2",
+        "vuepress": "^1.5.4"
+    }
+}
