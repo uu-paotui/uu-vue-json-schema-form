@@ -32,6 +32,9 @@ import componentPackAllGoodsList from '../viewComponents/AllGoodsList';
 // 优惠券
 import componentPackCoupon from '../viewComponents/Coupon';
 
+// 描述文本
+import componentPackDescription from '../viewComponents/Description';
+
 
 /**
  * hidden 隐藏，不显示在工具栏
@@ -80,6 +83,11 @@ const tools = [
             maxNum: 20,
             icon: 'el-icon-notebook-1',
             componentPack: componentPackText
+        }, {
+            title: '描述文本',
+            maxNum: 22,
+            icon: 'el-icon-notebook-1',
+            componentPack: componentPackDescription
         }]
     },
     {

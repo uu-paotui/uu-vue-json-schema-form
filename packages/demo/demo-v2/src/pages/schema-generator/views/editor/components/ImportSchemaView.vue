@@ -1,16 +1,28 @@
+<!--
+ * @Author: wendy
+ * @LastEditors: wendy
+ * @Date: 2021-12-08 11:44:34
+ * @LastEditTime: 2021-12-08 16:34:53
+ * @Description: 导入Schema
+-->
 <template>
-    <div style="text-align: right;">
+    <div>
         <div style="margin: -10px 0 10px; text-align: left;color: #999;">
             <p>如果导出的数据手动修改过再次导入可能会导入失败，同时配置组件做了细化拆分方便导入匹配正确结果，可能得不偿失，有点鸡肋 Orz . ...</p>
         </div>
-        <el-input
+        <!-- <el-input
             v-model="importStr"
             type="textarea"
             :autosize="{ minRows: 10, maxRows: 20}"
             placeholder="注意：导入数据格式请参考导出数据格式"
         >
-        </el-input>
-        <p style="margin-top: 20px;">
+        </el-input> -->
+        <!-- 换成编辑器 -->
+        <CodeEditor
+            v-model="importStr"
+            title="导入数据格式请参考导出数据格式"
+        ></CodeEditor>
+        <p style="margin-top: 20px; text-align: right;">
             <el-button
                 type="primary"
                 @click="$emit('onImport', importStr)"
@@ -22,9 +34,11 @@
 </template>
 
 <script>
+import CodeEditor from 'demo-common/components/CodeEditorV2';
 
 export default {
     name: 'ImportSchemaView',
+    components: { CodeEditor },
     data() {
         return {
             importStr: ''

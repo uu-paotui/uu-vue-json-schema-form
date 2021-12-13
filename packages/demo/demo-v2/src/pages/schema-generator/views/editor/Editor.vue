@@ -21,6 +21,13 @@
             >
                 导出Schema
             </el-button>
+            <el-button
+                icon="el-icon-download"
+                type="primary"
+                @click="handleExportVue"
+            >
+                导出vue文件
+            </el-button>
         </EditorHeader>
 
         <div :class="[$style.container]">
@@ -147,7 +154,7 @@ import FormConfSchema from './viewComponents/FormConf';
 import EditorToolBar from './EditorToolBar.vue';
 import ExportSchemaView from './components/ExportSchemaView.vue';
 import ImportSchemaView from './components/ImportSchemaView.vue';
-
+import ExportVueFile from './components/ExportVueFile.vue';
 
 import { deepFreeze } from './common/utils';
 
@@ -343,6 +350,18 @@ export default {
                         this.handleToDemo();
                     }
                 }
+            });
+        },
+        handleExportVue() {
+            componentWithDialog({
+                VueComponent: ExportVueFile,
+                dialogProps: {
+                    title: '导出vue文件',
+                    width: '800px'
+                },
+                componentProps: {
+                    genCode: this.getExportCode(),
+                },
             });
         },
         handleToDemo() {
