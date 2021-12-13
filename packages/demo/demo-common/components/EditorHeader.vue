@@ -1,18 +1,6 @@
 <template>
     <div :class="$style.box">
         <div :class="$style.headerMenuBox">
-            <h1>
-                <a
-                    :class="$style.menuLink"
-                    href="https://vue-json-schema-form.lljj.me/"
-                >
-                    <img
-                        :class="$style.logo"
-                        src="https://vue-json-schema-form.lljj.me/logo.png"
-                        alt="Vue JSON Schema Form"
-                    >
-                </a>
-            </h1>
             <Menu
                 :class="$style.menu"
                 :version="version"
@@ -67,6 +55,14 @@ export default {
             const { ui, ...query } = this.$route.query;
             const genRoute = this.$router.resolve({ query });
             window.location.href = `${(val === 'vue3' ? '/v3/' : '/')}${genRoute.href}`;
+
+            // TODO: 本地调试 同时运行项目 demo-v2 demo-v3, 需要服务端配置 路径代理
+            // if (val === 'vue3') {
+            //     window.location.replace(`${window.location.protocol}//${window.location.hostname}:8801${window.location.pathname}${window.location.hash}`)
+            // }
+            // if (val === 'vue2') {
+            //     window.location.replace(`${window.location.protocol}//${window.location.hostname}:8800${window.location.pathname}${window.location.hash}`)
+            // }
         },
     }
 };

@@ -88,6 +88,14 @@
                     ></el-option>
                 </el-select>
                 <el-button
+                    icon="el-icon-download"
+                    type="primary"
+                    size="small"
+                    @click="handleExportVueFile"
+                >
+                    导出vue文件
+                </el-button>
+                <el-button
                     icon="el-icon-share"
                     type="primary"
                     size="small"
@@ -224,6 +232,8 @@ import { defineAsyncComponent, getCurrentInstance, h } from 'vue';
 import EditorHeader from 'demo-common/components/EditorHeader.vue';
 import CodeEditor from 'demo-common/components/CodeEditor';
 import schemaTypes from 'demo-common/schemaTypes';
+import { saveAs } from 'file-saver';
+import {vueTemplate, vueScript, cssStyle} from 'demo/src/pages/schema-generator/views/editor/components/templete';
 
 const VueElementForm = defineAsyncComponent(() => import('@lljj/vue3-form-element'));
 
@@ -510,6 +520,29 @@ export default {
             if (this.clipboard(url)) {
                 this.$message.success('复制预览地址成功');
             }
+        },
+        handleExportVueFile() {
+            const formatStr = jsonCode => JSON.parse(jsonCode);
+            const genCode = {
+                schema: formatStr(this.curSchemaCode),
+                uiSchema: formatStr(this.curUiSchemaCode),
+                formFooter: formatStr(JSON.stringify(this.trueFormFooter)),
+                formProps: formatStr(JSON.stringify(this.trueFormProps))
+            }
+            const UIType = {
+                'VueAntForm': 'antdv',
+                'VueElementForm': 'elementPlus'
+            }
+            const html = `${vueTemplate('vue3')}
+                ${vueScript({
+                version: 'vue3',
+                uiType: UIType[this.curVueForm],
+                genCode,
+                })}
+                ${cssStyle()}
+            `
+            const blob = new Blob([html], { type: 'text/plain;charset=utf-8' })
+            saveAs(blob, 'demo.vue')
         }
     }
 };
