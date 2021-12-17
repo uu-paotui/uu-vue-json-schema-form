@@ -16,6 +16,7 @@
         "demo-common": "1.2.0",
         "file-saver": "^2.0.5",
         "iview": "^3.5.4",
+        "localforage": "^1.10.0",
         "vue": "^2.6.10",
         "vuedraggable": "2.23.2"
     },

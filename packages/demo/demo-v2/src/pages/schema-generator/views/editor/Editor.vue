@@ -155,6 +155,7 @@ import EditorToolBar from './EditorToolBar.vue';
 import ExportSchemaView from './components/ExportSchemaView.vue';
 import ImportSchemaView from './components/ImportSchemaView.vue';
 import ExportVueFile from './components/ExportVueFile.vue';
+import localforage from 'localforage';
 
 import { deepFreeze } from './common/utils';
 
@@ -226,6 +227,7 @@ export default {
     },
     destroyed() {
         window.document.body.classList.remove('page-decorate-design');
+        localforage.clear().then();
     },
     created() {
         this.$on('onSetCurEditorItem', ({ editorItem }) => {
@@ -365,14 +367,27 @@ export default {
             });
         },
         handleToDemo() {
-            const codeObj = this.getExportCode();
-            const urlQueryString = Object.keys(codeObj).reduce((pre, cur) => {
-                pre.push(`${cur}=${encodeURIComponent(JSON.stringify(codeObj[cur]))}`);
-                return pre;
-            }, []).join('&');
+            let codeObj = this.getExportCode();
+            // const urlQueryString = Object.keys(codeObj).reduce((pre, cur) => {
+            //     pre.push(`${cur}=${encodeURIComponent(JSON.stringify(codeObj[cur]))}`);
+            //     return pre;
+            // }, []).join('&');
 
-            const link = `/index.html#/demo?type=Test&${urlQueryString}`;
-            openNewPage(link, '_specialViewForm');
+            // const link = `/index.html#/demo?type=Test&${urlQueryString}`;
+            // openNewPage(link, '_specialViewForm');
+            
+            /**
+             * 改变原始传递schema方式
+             * 原方式：拼在url上面（缺点：url参数有长度限制）
+             * 现方式：本地离线存储（大小不受限制，支持回调，存储格式多样化）
+             */
+            if (JSON.stringify(codeObj.schema.properties) === '{}') {
+                // 兼容Test模板
+                codeObj = {};
+            }
+            localforage.setItem('Test', codeObj).then(() => {
+                openNewPage('/index.html#/demo?type=Test', '_specialViewForm');
+            })
         }
     }
 };

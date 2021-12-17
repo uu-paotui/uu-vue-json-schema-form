@@ -234,6 +234,7 @@ import CodeEditor from 'demo-common/components/CodeEditor';
 import schemaTypes from 'demo-common/schemaTypes';
 import { saveAs } from 'file-saver';
 import {vueTemplate, vueScript, cssStyle} from 'demo/src/pages/schema-generator/views/editor/components/templete';
+import localforage from 'localforage';
 
 const VueElementForm = defineAsyncComponent(() => import('@lljj/vue3-form-element'));
 
@@ -382,22 +383,38 @@ export default {
     },
     methods: {
         handleUiChange(value) {
-            const formatStr = jsonCode => JSON.stringify(JSON.parse(jsonCode));
+            // const formatStr = jsonCode => JSON.stringify(JSON.parse(jsonCode));
 
+            // this.$router.replace({
+            //     query: {
+            //         ...this.$route.query,
+            //         ui: value,
+            //         schema: formatStr(this.curSchemaCode),
+            //         formData: formatStr(this.curFormDataCode),
+            //         uiSchema: formatStr(this.curUiSchemaCode),
+            //         errorSchema: formatStr(this.curErrorSchemaCode),
+            //         formFooter: formatStr(JSON.stringify(this.trueFormFooter)),
+            //         formProps: formatStr(JSON.stringify(this.trueFormProps)),
+            //     }
+            // }).then(() => {
+            //     window.location.reload();
+            // });
             this.$router.replace({
                 query: {
                     ...this.$route.query,
                     ui: value,
-                    schema: formatStr(this.curSchemaCode),
-                    formData: formatStr(this.curFormDataCode),
-                    uiSchema: formatStr(this.curUiSchemaCode),
-                    errorSchema: formatStr(this.curErrorSchemaCode),
-                    formFooter: formatStr(JSON.stringify(this.trueFormFooter)),
-                    formProps: formatStr(JSON.stringify(this.trueFormProps)),
                 }
+            });
+            localforage.setItem(this.curType, {
+                schema: JSON.parse(this.curSchemaCode),
+                formData: JSON.parse(this.curFormDataCode),
+                uiSchema: JSON.parse(this.curUiSchemaCode),
+                errorSchema: JSON.parse(this.curErrorSchemaCode),
+                formFooter: this.trueFormFooter,
+                formProps: this.trueFormProps,
             }).then(() => {
                 window.location.reload();
-            });
+            })
         },
         sliderFormat(value) {
             return value ? `${value * 4}px` : undefined;
@@ -439,32 +456,33 @@ export default {
         },
         initData() {
             // eslint-disable-next-line no-unused-vars
-            const { type, ui, ...queryParams } = this.$route.query;
+            // const { type, ui, ...queryParams } = this.$route.query;
+            // let queryParamsObj = {};
+            localforage.getItem(this.curType).then(value => {
+                const genCode = value || {};
+                // 还原 labelWidth
+                if (genCode.formProps && genCode.formProps.labelWidth) {
+                    genCode.formProps.labelWidth = parseFloat(genCode.formProps.labelWidth) / 4;
+                }
 
-            let queryParamsObj = {};
+                const defaultState = this.getDefaultSchemaMap();
+                const formProps = {
+                    ...defaultState.formProps,
+                    ...(genCode.formProps || {})
+                };
+
+                Object.assign(this, defaultState, Object.assign(schemaTypes[this.curType], genCode, {
+                    formProps
+                }));
+            })
             try {
-                queryParamsObj = Object.entries(queryParams).reduce((preVal, [key, value]) => {
-                    preVal[key] = JSON.parse(String(value));
-                    return preVal;
-                }, {});
+                // queryParamsObj = Object.entries(queryParams).reduce((preVal, [key, value]) => {
+                //     preVal[key] = JSON.parse(String(value));
+                //     return preVal;
+                // }, {});
             } catch (e) {
                 // nothing ...
             }
-
-            // 还原 labelWidth
-            if (queryParamsObj.formProps && queryParamsObj.formProps.labelWidth) {
-                queryParamsObj.formProps.labelWidth = parseFloat(queryParamsObj.formProps.labelWidth) / 4;
-            }
-
-            const defaultState = this.getDefaultSchemaMap();
-            const formProps = {
-                ...defaultState.formProps,
-                ...(queryParamsObj.formProps || {})
-            };
-
-            Object.assign(this, defaultState, Object.assign(schemaTypes[this.curType], queryParamsObj, {
-                formProps
-            }));
         },
         handleSearch() {
             console.log('$$uiFormRef', this.$refs.schemaForm.$$uiFormRef);
@@ -505,14 +523,15 @@ export default {
 
             const genRoute = this.$router.resolve({
                 query: {
-                    ui: this.curVueForm,
-                    type: 'Test',
-                    schema: formatStr(this.curSchemaCode),
-                    formData: formatStr(this.curFormDataCode),
-                    uiSchema: formatStr(this.curUiSchemaCode),
-                    errorSchema: formatStr(this.curErrorSchemaCode),
-                    formFooter: formatStr(JSON.stringify(this.trueFormFooter)),
-                    formProps: formatStr(JSON.stringify(this.trueFormProps)),
+                    ...this.$route.query
+                    // ui: this.curVueForm,
+                    // type: 'Test',
+                    // schema: formatStr(this.curSchemaCode),
+                    // formData: formatStr(this.curFormDataCode),
+                    // uiSchema: formatStr(this.curUiSchemaCode),
+                    // errorSchema: formatStr(this.curErrorSchemaCode),
+                    // formFooter: formatStr(JSON.stringify(this.trueFormFooter)),
+                    // formProps: formatStr(JSON.stringify(this.trueFormProps)),
                 }
             });
             const url = `${window.location.origin}${window.location.pathname}${genRoute.href}`;
